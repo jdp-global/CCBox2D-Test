@@ -3,10 +3,11 @@
 #import "CCJointSprite.h"
 #import "CCSpringSprite.h"
 
+
 @implementation CCApplyForce{
     
 };
-
+#define BODY_TAG 10000000
 -(id) init
 {
 
@@ -15,29 +16,17 @@
     if  (self!=nil){
 
         m_world->SetGravity(b2Vec2(0.0f, 0.0f));
-   
-        
-        // Define the ground box shape.
-        CGSize screenSize = [CCDirector sharedDirector].winSize;
-		CGPoint screenCenter = CGPointMake(screenSize.width * 0.5f, screenSize.height * 0.5f);
-        
-        //float scale = 1.0f/15;
-        ground = [self createGround:screenSize];
-        ground.anchorPoint = screenCenter;
-     
+        [self createCartesianBounds];
         
         CCBodySprite *centerBody = [[CCBodySprite spriteWithFile:@"Icon.png"]retain];
-        centerBody.tag = 111;
+        centerBody.tag = BODY_TAG;
         b2BodyDef bodyDef;
         bodyDef.type = b2_staticBody;
         [centerBody configureSpriteForWorld:m_world bodyDef:bodyDef];
-        centerBody.position = ccp(500,500);
+        centerBody.position = ccp(0,0);
         [self addChild:centerBody z:-100];
-        
-		{
-            [self generateNodesWithParent:centerBody];
-		}
-
+        kirbyCounter = 0;
+        [self generateNodesWithParent:centerBody];
         
 
     }
@@ -46,6 +35,23 @@
 -(void)dealloc{
     [ground release];
     [super dealloc];
+}
+-(void)removeRandomNodes{
+    float j = RandomFloat(0,5);
+    
+    if (j == 0) {
+        if (kirbyCounter>30){
+            float kill = RandomFloat(1,25);
+            int i=0;
+            for (i =0; i<kill; i++) {
+                CCBodySprite *p = (CCBodySprite*)[self getChildByTag:kirbyCounter];
+                [p removeFromParentAndCleanup:YES];
+               // [self removeChildByTag:kirbyCounter];
+                kirbyCounter--;
+            }
+        }
+    }
+   
 }
 -(void)generateNodesWithParent:(CCBodySprite*)parentSprite{
     b2PolygonShape shape;
@@ -58,10 +64,10 @@
     
     BG_WEAKSELF;
     
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 2; ++i)
     {
         CGPoint pt;
-        if (parentSprite.tag ==111) {
+        if (parentSprite.tag ==BODY_TAG) {
          pt  = ccp(parentSprite.position.x,parentSprite.position.y+i);
         }else{
           pt  = ccp(parentSprite.position.x*PTM_RATIO,parentSprite.position.y*PTM_RATIO+i);
@@ -70,9 +76,10 @@
         NSLog(@"pt.x:%f",pt.x);
         NSLog(@"pt.y:%f",pt.y);
         
-        CCBodySprite *kirby = [[CCBodySprite spriteWithFile:@"Icon.png"]retain];
-        kirby.color = ccMAGENTA;
-        
+        CCBodySprite *kirby = [[CCBodySprite spriteWithFile:@"Kirby.png"]retain];
+        //kirby.color = ccMAGENTA;
+        kirby.tag = kirbyCounter+1;
+        kirbyCounter ++;
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
         bodyDef.awake = YES;
@@ -82,18 +89,35 @@
         [self addChild:kirby]; //add the kirby image into canvas
         
         
-        float radius = 150;
-        CCShape *circle = [CCShape circleWithCenter:ccp(5,5) radius:radius];
-        circle.restitution = 0.0f;
+      
+        CCShape *circle = [CCShape circleWithCenter:ccp(5,5) radius:20];
+        circle.restitution = RandomFloat(1,5);
         [kirby addShape:circle named:@"circle"];
-        float scale =1.0f/15;
-        [kirby setScale:scale];
+       // float scale =1.0f/15;
+        [kirby setScale:0.8];
 
         kirby.onTouchDownBlock = ^{
             NSLog(@"onTouchDownBlock");
-
-            [weakSelf generateNodesWithParent:kirby];
-            //circle
+            
+            //CCBodySprite *p = (CCBodySprite*)[self getChildByTag:kirbyCounter];
+            if (parentSprite.tag ==BODY_TAG) {
+                 [weakSelf generateNodesWithParent:kirby];
+            }else{
+                float r = RandomFloat(1,25);
+                if (r>20){
+                    CCArray *arr = [parentSprite children];
+                    for (CCSpringSprite *n in arr) {
+                        //CCShape *circle = [n shapeNamed:@"circle"];
+                        n.color  = ccMAGENTA;
+                    }
+                    [parentSprite removeFromParentAndCleanup:YES];
+                }else{
+                    [weakSelf generateNodesWithParent:kirby];  
+                }
+                
+            }
+ 
+            
             
         };
         
@@ -103,10 +127,11 @@
         float32 mass = [kirby mass];
         
         // For a circle: I = 0.5 * m * r * r ==> r = sqrt(2 * I / m)
-        radius = b2Sqrt(2.0f * I / mass);
+        float radius = b2Sqrt(2.0f * I / mass);
         
         //b2FrictionJointDef jd;
         b2FrictionJointDef jd;
+        
         jd.localAnchorA.SetZero();
         jd.localAnchorB.SetZero();
         jd.bodyA = parentSprite.body;

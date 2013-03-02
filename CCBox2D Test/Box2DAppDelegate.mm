@@ -57,6 +57,7 @@ enum {
         CCApplyForce *view =[[CCApplyForce alloc]init];
         [view setScale:1];
 		[view setAnchorPoint:ccp(0,0)];
+        [view setPosition:ccp(s.width/2, s.height/2)];
         [scene addChild:view z:0 tag:kTagBox2DNode];
         
     }
