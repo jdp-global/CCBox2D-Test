@@ -17,6 +17,8 @@ In App Delegate
 	     [scene  addChild: [[CCBox2DView alloc] initWithEntryID:0]]; 
 	 }
 
+![Alt text](/screenshots/kirbydemo.png "Apply Force demo")
+
 
 Podfile
 ============
