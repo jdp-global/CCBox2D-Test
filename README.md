@@ -20,6 +20,11 @@ In App Delegate
 ![Alt text](/screenshots/kirbydemo.png "Apply Force demo")
 
 
+Hook into callbacks on touch / start collision / end collision
+![Alt text](/screenshots/CCbodysprite.png "Sample Code")
+
+
+
 Podfile
 ============
 	platform :ios, '5.0'

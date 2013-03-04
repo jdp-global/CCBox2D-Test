@@ -111,11 +111,9 @@
                 };
                 bd.startContact = ^(CCBodySprite *other, NSString *shapeName, NSString *otherShapeName){
                     NSLog(@"other%@",other);
-                    NSLog(@"shapeName:%@",shapeName);
                 };
                 bd.endContact = ^(CCBodySprite *other, NSString *shapeName, NSString *otherShapeName){
                     NSLog(@"other%@",other);
-                    NSLog(@"shapeName:%@",shapeName);
                 };
                 
                 // box physics behind sprite
