@@ -98,8 +98,6 @@
             
 			for (int i = 0; i < 10; ++i)
 			{
-              
-               
                 CCBodySprite *bd = [CCBodySprite spriteWithFile:@"Icon.png"];
                 b2BodyDef bodyDef;
                 bodyDef.type = b2_dynamicBody;
@@ -111,6 +109,15 @@
                 bd.onTouchDownBlock = ^{
                     NSLog(@"onTouch");
                 };
+                bd.startContact = ^(CCBodySprite *other, NSString *shapeName, NSString *otherShapeName){
+                    NSLog(@"other%@",other);
+                    NSLog(@"shapeName:%@",shapeName);
+                };
+                bd.endContact = ^(CCBodySprite *other, NSString *shapeName, NSString *otherShapeName){
+                    NSLog(@"other%@",other);
+                    NSLog(@"shapeName:%@",shapeName);
+                };
+                
                 // box physics behind sprite
                 CCShape *box = [CCShape boxWithRect:CGRectMake(-0.5,-0.5,1,1)];
                 [bd addShape:box named:[NSString stringWithFormat:@"fd%d",i]];
@@ -131,10 +138,12 @@
 				jd.maxForce = mass * gravity;
 				jd.maxTorque = mass * radius * gravity;
                 
-				m_world->CreateJoint(&jd);
-               // CCJointSprite *joint = [[CCJointSprite alloc]initWithWorld:m_world jointDef:jd];
-                //
-            
+				//m_world->CreateJoint(&jd);
+                CCJointSprite *joint = [CCJointSprite spriteWithFile:@"Icon.png"];
+                [joint configureSpriteForWorld:m_world  jointDef:jd];
+                [joint setScale:0.04];
+                [self addChild:joint];
+                
                 
                 
 			}
