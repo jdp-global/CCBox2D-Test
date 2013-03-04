@@ -138,11 +138,11 @@
 				jd.maxForce = mass * gravity;
 				jd.maxTorque = mass * radius * gravity;
                 
-				//m_world->CreateJoint(&jd);
-                CCJointSprite *joint = [CCJointSprite spriteWithFile:@"Icon.png"];
+				m_world->CreateJoint(&jd);
+               /* CCJointSprite *joint = [CCJointSprite spriteWithFile:@"Icon.png"];
                 [joint configureSpriteForWorld:m_world  jointDef:jd];
                 [joint setScale:0.04];
-                [self addChild:joint];
+                [self addChild:joint]; //this joint is not tracking the sprite*/
                 
                 
                 
