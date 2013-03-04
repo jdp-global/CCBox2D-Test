@@ -132,17 +132,17 @@ enum {
 
 -(void) onOverlapBody:(CCBodySprite *)sprite1 andBody:(CCBodySprite *)sprite2
 {
-  //  NSLog(@"onOverlapBody");
+    NSLog(@"onOverlapBody");
 }
 
 -(void) onSeparateBody:(CCBodySprite *)sprite1 andBody:(CCBodySprite *)sprite2
 {
- //   NSLog(@"onSeparateBody");
+    NSLog(@"onSeparateBody");
 }
 
 -(void) onCollideBody:(CCBodySprite *)sprite1 andBody:(CCBodySprite *)sprite2 withForce:(float)force withFrictionForce:(float)frictionForce;
 {
-//    NSLog(@"onCollideBody");
+   // NSLog(@"onCollideBody");
 }
 
 
